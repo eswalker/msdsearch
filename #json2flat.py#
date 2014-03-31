@@ -21,5 +21,5 @@ with open(f, 'r') as content_file:
         	tags = tags + unicode("|") + unicode(data["tags"][x][0]) + unicode(",") + unicode(data["tags"][x][1]) 
         	numtags += 1
     if len(tags) != 0:
-    	print data["track_id"] + "|" + data["artist"] + "|" + data["title"] + '|' + unicode(numtags) + tags
+    	print data["artist"] + "|" + data["title"] + '|' + unicode(numtags) + tags
     	#print tags
