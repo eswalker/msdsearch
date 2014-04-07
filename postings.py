@@ -2,6 +2,7 @@ import hashlib
 import random
 from operator import itemgetter
 import sys
+import os
 
 # makes random inverted index files, for testing purposes, with name tagname and expected number of trackIDs 0.5*docnum
 def makefile(tagname, docnum):
@@ -13,19 +14,22 @@ def makefile(tagname, docnum):
     f.close()
              
 
+
 # Return list of tracks and term weights sorted by trackID.
 def getlist(tagnm):
     hashtag = hashlib.md5(tagnm).hexdigest()
-    listfile = open(hashtag, 'r')
+    if (not os.path.exists(os.path.join('PostingsList', hashtag))):
+         return (0,0)
+    listfile = open(os.path.join('PostingsList', hashtag), 'r')
     plist = listfile.read().split('|')
     tuples = [None]*(len(plist)-1)
     for i in xrange(1, len(plist)):
         temp = plist[i].split(',')
-        tuples[i-1] = (temp[0], temp[1])
+        tuples[i-1] = (temp[0], float(temp[1]))
     return sorted(tuples)
 
 
-# Return sorted list of triples in format (trackID, weight1+weight2). Can use several calls to intersect several lists.
+# Return sorted list of tuples in format (trackID, weight1+weight2). Can use several calls to intersect several lists.
 def intersectlists(list1, list2):
 # arguments are lists of tuples, sorted by first member, 
 # in format (trackID, weight).
@@ -72,8 +76,10 @@ def testing():
     print sortedtracks(intersection2)
 
 
-mainlist = getlist(sys.argv[1])
+"""mainlist = getlist(sys.argv[1])
 for i in xrange(2, len(sys.argv)):
    mainlist = intersectlists(mainlist, getlist(sys.argv[i]))
 
 print sortedtracks(mainlist)
+"""
+
