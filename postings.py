@@ -19,7 +19,7 @@ def makefile(tagname, docnum):
 def getlist(tagnm):
     hashtag = hashlib.md5(tagnm).hexdigest()
     if (not os.path.exists(os.path.join('PostingsList', hashtag))):
-         return (0,0)
+         return [(0,0)]
     listfile = open(os.path.join('PostingsList', hashtag), 'r')
     plist = listfile.read().split('|')
     tuples = [None]*(len(plist)-1)
@@ -55,6 +55,24 @@ def intersectlists(list1, list2):
 # put tracks in descending order of total term weight
 def sortedtracks(intersection):
     return sorted(intersection, key=itemgetter(1), reverse=True)
+
+# takes list of tuples (trackID, weight) as args and outputs list of names of tracks in weight order as strings.
+def tracknames(tuples):
+    tracks = []
+    tuples = sortedtracks(tuples)
+    if (tuples[0][0] == 0):
+        return ['no results found']
+
+    for i in xrange(0, len(tuples)):
+        if (not os.path.exists('Track/'+tuples[i][0])):
+            tracks.append(tuples[i][0])
+            continue
+        else:
+            tempfile = open('Track/'+tuples[i][0], 'r')
+            temp = tempfile.read().split('|')
+            tracks.append(temp[3] + ' ' + str(tuples[i][1]))
+    return tracks
+
 
 # make 3 new files and test functionality of above code.
 def testing():
