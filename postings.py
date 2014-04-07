@@ -1,7 +1,7 @@
 import hashlib
 import random
 from operator import itemgetter
-
+import sys
 
 # makes random inverted index files, for testing purposes, with name tagname and expected number of trackIDs 0.5*docnum
 def makefile(tagname, docnum):
@@ -71,4 +71,9 @@ def testing():
     
     print sortedtracks(intersection2)
 
-testing()
+
+mainlist = getlist(sys.argv[1])
+for i in xrange(2, len(sys.argv)):
+   mainlist = intersectlists(mainlist, getlist(sys.argv[i]))
+
+print sortedtracks(mainlist)
