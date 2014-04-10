@@ -22,8 +22,11 @@ def getlist(tagnm):
          return [(0,0)]
     listfile = open(os.path.join('PostingsList', hashtag), 'r')
     plist = listfile.read().split('|')
-    tuples = [None]*(len(plist)-1)
-    for i in xrange(1, len(plist)):
+    numtracks = len(plist)
+    if (numtracks >=150):
+        numtracks = 150;
+    tuples = [None]*(numtracks-1)
+    for i in xrange(1, numtracks):
         temp = plist[i].split(',')
         tuples[i-1] = (temp[0], float(temp[1]))
     return sorted(tuples)
