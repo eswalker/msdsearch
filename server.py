@@ -47,7 +47,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		self.wfile.write('<table class="table table-bordered"> <tr><th>Rank</th><th>Track Title</th><th>Artist</th><th>Score</th></tr> ')
 		
 		for i in xrange(0, len(tracks)):
-			split = tracks[i].split(' ')
+			split = tracks[i].split('|')
 			outstring = '<tr><td>'+str(i)+'</td><td>'+split[0]+'</td><td>'+split[1]+'</td><td>'+split[2]+'</td>'+'</tr>'
 			self.wfile.write(outstring)
 	
