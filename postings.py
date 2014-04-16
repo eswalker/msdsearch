@@ -28,7 +28,7 @@ def getlist(tagnm):
     tuples = [None]*(numtracks-1)
     for i in xrange(1, numtracks):
         temp = plist[i].split(',')
-        tuples[i-1] = (temp[0], float(temp[1]))
+        tuples[i-1] = (temp[0], float(temp[1]) + 1-i/1000000)
     return sorted(tuples)
 
 
