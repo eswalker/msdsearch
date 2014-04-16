@@ -23,8 +23,8 @@ def getlist(tagnm):
     listfile = open(os.path.join('PostingsList', hashtag), 'r')
     plist = listfile.read().split('|')
     numtracks = len(plist)
-    if (numtracks >=150):
-        numtracks = 150;
+  #  if (numtracks >=1500):
+   #     numtracks = 1500;
     tuples = [None]*(numtracks-1)
     for i in xrange(1, numtracks):
         temp = plist[i].split(',')
@@ -64,9 +64,11 @@ def tracknames(tuples):
     tracks = []
     tuples = sortedtracks(tuples)
     if (tuples == [] or tuples[0][0] == 0):
-        return ['no|results|found']
-
-    for i in xrange(0, len(tuples)):
+        return ['no|results|found|sorry']
+    numresults = len(tuples)
+    if(numresults > 200):
+        numresults = 200
+    for i in xrange(0, numresults):
         if (not os.path.exists('Track/'+tuples[i][0])):
             tracks.append('Track_title|Artist|'+str(tuples[i][1])+'|'+str(tuples[i][0]))
             continue
