@@ -28,7 +28,7 @@ def getlist(tagnm):
     tuples = [None]*(numtracks-1)
     for i in xrange(1, numtracks):
         temp = plist[i].split(',')
-        tuples[i-1] = (temp[0], float(temp[1]) + 1-i/1000000)
+        tuples[i-1] = (temp[0], float(temp[1]) + 1-i/1000000.0)
     return sorted(tuples)
 
 
@@ -73,7 +73,7 @@ def tracknames(tuples):
         else:
             tempfile = open('Track/'+tuples[i][0], 'r')
             temp = tempfile.read().split('|')
-            tracks.append(temp[3] + ' ' + str(tuples[i][1]))
+            tracks.append(temp[3] + ', ' +temp[2] +' ' + str(tuples[i][1]))
     return tracks
 
 
