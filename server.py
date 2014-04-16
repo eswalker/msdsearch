@@ -44,11 +44,11 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			mainlist = postings.intersectlists(mainlist, postings.getlist(query[i]))
 		tracks = postings.tracknames(mainlist)
 		outstring = ""
-		self.wfile.write('<table class="table table-bordered"> <tr><th>Rank</th><th>Track Title</th><th>Artist</th><th>Score</th></tr> ')
+		self.wfile.write('<table class="table table-bordered"> <tr><th>Rank</th><th>Track Title</th><th>Artist</th><th>Score</th><th>TrackID</th></tr> ')
 		
 		for i in xrange(0, len(tracks)):
 			split = tracks[i].split('|')
-			outstring = '<tr><td>'+str(i)+'</td><td>'+split[0]+'</td><td>'+split[1]+'</td><td>'+split[2]+'</td>'+'</tr>'
+			outstring = '<tr><td>'+str(i)+'</td><td>'+split[0]+'</td><td>'+split[1]+'</td><td>'+split[2]+'</td><td>'+split[3]+'</tr>'
 			self.wfile.write(outstring)
 	
 		self.wfile.write('</table></div></body>')

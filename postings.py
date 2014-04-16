@@ -63,17 +63,17 @@ def sortedtracks(intersection):
 def tracknames(tuples):
     tracks = []
     tuples = sortedtracks(tuples)
-    if (tuples[0][0] == 0):
+    if (tuples == [] or tuples[0][0] == 0):
         return ['no|results|found']
 
     for i in xrange(0, len(tuples)):
         if (not os.path.exists('Track/'+tuples[i][0])):
-            tracks.append('not|found|'+tuples[i][0])
+            tracks.append('Track_title|Artist|'+str(tuples[i][1])+'|'+str(tuples[i][0]))
             continue
         else:
             tempfile = open('Track/'+tuples[i][0], 'r')
             temp = tempfile.read().split('|')
-            tracks.append(temp[3] + '|' +temp[2] +'|' + str(tuples[i][1]))
+            tracks.append(temp[3] + '|' +temp[2] +'|' + str(tuples[i][1]))+'|'+str(tuples[i][0])
     return tracks
 
 
