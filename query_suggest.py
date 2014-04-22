@@ -40,6 +40,7 @@ def intersect_lists(list1, list2):
                 break
         if (list2[j][0] == list1[i][0]):
             tuples.append((list1[i][0], float(list1[i][1])+float(list2[j][1])))
+
     return tuples
 
 
@@ -52,7 +53,7 @@ def get_suggestions(partial_query):
     for i in xrange(1, len(tag_parts)-1):
         tuples = intersect_lists(tuples, getlist(tag_parts[i]))
     
-    suggestions = [None] * len(tuples)
+    suggestions = [None] 
 
     # sort by location as found (ties occur if we have tag1 and tag2 such that
     # tag1 appears in loc1 in list1, loc2 in list2 and tag2 appears in loc2 in 
@@ -60,11 +61,25 @@ def get_suggestions(partial_query):
     # ties arbitrarily.
     tuples = sorted(tuples, key=itemgetter(1)) 
     for i in xrange(0, len(tuples)):
-        suggestions[i] = tuples[i][0]
+        if (len(tuples[i][0].split(' ')) >= len(tag_parts)):
+            suggestions[i] = tuples[i][0]
 
     return suggestions
 
-print get_suggestions(sys.argv[1])
+f1 = open('QuerySuggestion/'+hashlib.md5('ro').hexdigest(), 'w');
+f1.write('ro|rock n roll|rocking|rohypnol|rolypolar bear|roll');
+f1.close()
+
+f2 = open('QuerySuggestion/'+hashlib.md5('rol').hexdigest(), 'w');
+
+f2.write('rol|rock n roll|roll tide|roll|rolling in the deep');
+f2.close()
+
+query = ''
+for i in xrange(1, len(sys.argv)):
+    query += sys.argv[i]+' '
+
+print get_suggestions(query)
 
 
 
