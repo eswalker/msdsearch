@@ -71,7 +71,7 @@ def get_suggestions(partial_query):
     if numsugg > 15:
         numsugg = 15
     return suggestions[0:numsugg]
-
+'''
 def makefile(name, contents):
     f1 = open('QuerySuggestion/'+hashlib.md5(name).hexdigest(), 'w');
     f1.write(name+ '|'+ contents);
@@ -94,7 +94,7 @@ for i in xrange(1, len(sys.argv)):
     query += sys.argv[i]+' '
 
 print get_suggestions(query)
-
+'''
 
 
 
