@@ -29,9 +29,12 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 <title></title>
   
 <script>
+  var suggestions;
+  var selector = 0;
   function getQueries(instring){
            $.ajax({type:'POST', url:'?p='+query, success:function(result){
-                var suggestions = eval('(' + result + ')');
+                suggestions = eval('(' + result + ')');
+                selector = 0;
                 var sugstring = '';
                 for (var i = 0; i < suggestions.length; i++)
                    sugstring += suggestions[i]+'<br>';
@@ -44,10 +47,19 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
      });
  
      $("#query").keydown(function(e){
-        if (e.keyCode!=8) return;
-        query = $("#query").val();
-        query = query.substring(0, query.length-1);
-        getQueries(query);
+        if (e.keyCode==8){
+           query = $("#query").val();
+           query = query.substring(0, query.length-1);
+           getQueries(query);
+        }
+        else if (e.keyCode==16){
+           end = suggestions.length-1
+           if (selector > end)
+             selector = 0;
+           if (suggestions[selector] != '--')
+             $("#query").val(suggestions[selector]);
+           selector++;
+        }
      });
   });
 
