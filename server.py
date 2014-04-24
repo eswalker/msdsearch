@@ -77,6 +77,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 					<td>
 
 					<h1 id="asdf">Million Song Database - Search By Tags</h1>
+                                        <div id='suggestions'> suggestions go here!</div>
 
 
 					<input type="text" autocomplete="off" size="100" class="input input-lg" id="query" name="q"> <br><br>
@@ -86,8 +87,6 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 				</tr>
 			</table>
 		</form> 
-<div id='suggestions'> suggestions go here!</div>
-
 
 ''')
 		
