@@ -40,20 +40,24 @@ def intersect_lists(list1, list2):
                 break
         if (list2[j][0] == list1[i][0]):
             tuples.append((list1[i][0], float(list1[i][1])+float(list2[j][1])))
-
+    print tuples
     return tuples
 
 
 # given a partial query string, returns all possible queries
 def get_suggestions(partial_query):
     tag_parts = partial_query.split(' ')
+    print tag_parts
     tuples = getlist(tag_parts[0])
+
+    if (tag_parts[len(tag_parts)-1] == ''):
+        tag_parts.remove('');
 
     # intersect lists for all words
     for i in xrange(1, len(tag_parts)-1):
         tuples = intersect_lists(tuples, getlist(tag_parts[i]))
-    
-    suggestions = [None] 
+
+    suggestions = [] 
 
     # sort by location as found (ties occur if we have tag1 and tag2 such that
     # tag1 appears in loc1 in list1, loc2 in list2 and tag2 appears in loc2 in 
@@ -62,18 +66,28 @@ def get_suggestions(partial_query):
     tuples = sorted(tuples, key=itemgetter(1)) 
     for i in xrange(0, len(tuples)):
         if (len(tuples[i][0].split(' ')) >= len(tag_parts)):
-            suggestions[i] = tuples[i][0]
+            suggestions.append(tuples[i][0])
+    numsugg = len(suggestions)
+    if numsugg > 15:
+        numsugg = 15
+    return suggestions[0:numsugg]
 
-    return suggestions
+def makefile(name, contents):
+    f1 = open('QuerySuggestion/'+hashlib.md5(name).hexdigest(), 'w');
+    f1.write(name+ '|'+ contents);
+    f1.close()
 
-f1 = open('QuerySuggestion/'+hashlib.md5('ro').hexdigest(), 'w');
-f1.write('ro|rock n roll|rocking|rohypnol|rolypolar bear|roll');
-f1.close()
-
-f2 = open('QuerySuggestion/'+hashlib.md5('rol').hexdigest(), 'w');
-
-f2.write('rol|rock n roll|roll tide|roll|rolling in the deep');
-f2.close()
+makefile('r', 'rock n roll|reggae|rihanna|roll|rock|rampage|rick astley')
+makefile('ro', 'rock n roll|roll|rock')
+makefile('rol', 'rock n roll|roll')
+makefile('roll', 'rock n roll|roll')
+makefile('roc', 'rock|rock n roll')
+makefile('re', 'reggae')
+makefile('ri', 'rihanna|rick astley')
+makefile('ra', 'rampage')
+makefile('a', 'rick astley')
+makefile('as', 'rick astley')
+makefile('ast', 'rick astley')
 
 query = ''
 for i in xrange(1, len(sys.argv)):
