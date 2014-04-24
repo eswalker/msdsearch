@@ -29,17 +29,28 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 <title></title>
   
 <script>
-  $(document).ready(function(){
-       $("#query").keypress(function(e){
-           query = $("#query").val()+String.fromCharCode(e.keyCode);
+  function getQueries(instring){
            $.ajax({type:'POST', url:'?p='+query, success:function(result){
-                var suggestions = eval('(' + result+ ')');
+                var suggestions = eval('(' + result + ')');
                 var sugstring = '';
                 for (var i = 0; i < suggestions.length; i++)
                    sugstring += suggestions[i]+'<br>';
-                $("#suggestions").html(sugstring);  } });
-        });
+                $("#suggestions").html(sugstring); 
+  }} ); }
+  $(document).ready(function(){
+     $("#query").keypress(function(e){ 
+            query = $("#query").val()+String.fromCharCode(e.keyCode);
+            getQueries(query); 
+     });
+ 
+     $("#query").keydown(function(e){
+        if (e.keyCode!=8) return;
+        query = $("#query").val();
+        query = query.substring(0, query.length-1);
+        getQueries(query);
+     });
   });
+
 </script>
 </head>
 
