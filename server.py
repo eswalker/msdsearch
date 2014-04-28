@@ -32,7 +32,10 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
   var suggestions;
   var selector = 0;
   function getQueries(instring){
-           $.ajax({type:'POST', url:'?p='+query, success:function(result){
+           var tagparts = instring.split(',');
+           var tag = tagparts[tagparts.length-1];
+           tag = tag.replace(' ','');
+           $.ajax({type:'POST', url:'?p='+tag, success:function(result){
                 suggestions = eval('(' + result + ')');
                 selector = 0;
                 var sugstring = '';
