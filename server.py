@@ -59,8 +59,11 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
            end = suggestions.length-1
            if (selector > end)
              selector = 0;
-           if (suggestions[selector] != '--')
-             $("#query").val(suggestions[selector]);
+           if (suggestions[selector] != '--'){
+             query = $('#query').val().split(',');
+             query[query.length-1] = suggestions[selector];
+             $("#query").val(query.join(', '));
+           }
            selector++;
         }
      });
