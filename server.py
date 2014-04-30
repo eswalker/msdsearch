@@ -10,7 +10,7 @@ query_split = "?q="
 
 class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	def do_POST(self):
-		path = self.path.replace("%20", ' ');
+		path = self.path.replace("%20", ' ').lower();
 		path = path.split('?p=')[1];
 		suggestions = query_suggest.get_suggestions(path)
 		print path;
@@ -21,8 +21,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		# query arrives in self.path; return anything, e.g.,
 		self.wfile.write('''<html>
 <head>
-<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-<link href="http://netdna.bootstrapcdn.com/bootswatch/3.1.1/slate/bootstrap.min.css" rel="stylesheet">
+<link href="http://netdna.bootstrapcdn.com/bootswatch/3.1.1/spacelab/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -78,12 +77,14 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 	$('.spotify').click(function(){
 
-		var record_track = $(this).parent().children().eq(1).text();
-		var record_artist = $(this).parent().children().eq(2).text();
-		var get_url = 'http://ws.spotify.com/search/1/track.json?q=' + record_track;
+		var record_track = $(this).parent().parent().children().eq(1).text();
+		var record_artist = $(this).parent().parent().children().eq(2).text();
+		var get_url = 'http://ws.spotify.com/search/1/track.json?q=' + encodeURIComponent(record_track);
+                console.log(get_url);
 		$.get(get_url, function( data ) {
 			target_artist = record_artist.toLowerCase().substring(0,8);
 			var match = false;
+                        console.log(data['tracks']);
 			console.log(data['tracks'][0]['href']);
 			for (var i = 0; i < data['tracks'].length; i++){
 				if (!match) {
@@ -92,13 +93,13 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 						redirect = data['tracks'][i]['href'];
 						redirect_data = redirect.split(':')
 						redirct_url = 'https://play.spotify.com/track/' + redirect_data[2];
-						window.location.href = redirct_url;
+						window.location = redirct_url;
 						match = true;
 					}
 				}
 			}
 			if (!match)
-  				$('#error').html("Sorry! We looked high and low but we could not find the track on spotify");
+  				$('#error').html("Sorry! We looked high and low but we could not find the track on spotify").show();
 		});
 	});
 
@@ -111,12 +112,12 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 	<div class="container col-md-12">
 
-		<form name="input" action="http://localhost:8083" method="get">
+		<form name="input" action="" method="get">
 			<table class="table ">
 				<tr>
 				
 					<td>
-
+                                        <p id="error" class="bg-danger" hidden></p>
 					<h1 id="asdf">Million Song Database - Search By Tags</h1>
                                         <div id='instructions'> <b>Input your search terms below. Search suggestions will pop up beneath this banner; press shift to iterate through the list.</b> <br><br> </div>
 
@@ -132,22 +133,22 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 ''')
 		
-		path = self.path.encode('utf-8').replace("+", "%20")
+		path = self.path.encode('utf-8').replace("+", "%20").lower()
 		decoded_path = urllib.unquote(path.encode('utf-8'))	
 		query = decoded_path[decoded_path.index(query_split) + len(query_split):]		
 
 		query = query.split(',')
 
-		mainlist = postings.getlist(query[0])
+		mainlist = postings.getlist(query[0].strip())
 		for i in xrange(1, len(query)):
-			mainlist = postings.intersectlists(mainlist, postings.getlist(query[i]))
+			mainlist = postings.intersectlists(mainlist, postings.getlist(query[i].strip()))
 		tracks = postings.tracknames(mainlist)
 		outstring = ""
 		self.wfile.write('<table class="table table-bordered"> <tr><th>Rank</th><th>Track Title</th><th>Artist</th><th>Score</th><th>TrackID</th><th>Listen</th></tr> ')
 		
 		for i in xrange(0, len(tracks)):
 			split = tracks[i].split('|')
-			outstring = '<tr><td>'+str(i)+'</td><td>'+split[0]+'</td><td>'+split[1]+'</td><td>'+split[2]+'</td><td>'+split[3]+'<td><button class="btn btn-primary spotify">Spotify</button></td>'+'</tr>'
+			outstring = '<tr><td>'+str(i)+'</td><td>'+split[0]+'</td><td>'+split[1]+'</td><td>'+split[2]+'</td><td>'+split[3]+'<td><button class="btn btn-success spotify">Spotify</button></td>'+'</tr>'
 			self.wfile.write(outstring)
 	
 		self.wfile.write('</table></div></body>')
