@@ -22,6 +22,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		self.wfile.write('''<html>
 <head>
 <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="http://netdna.bootstrapcdn.com/bootswatch/3.1.1/slate/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -67,6 +68,33 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
            selector++;
         }
      });
+
+	$('.spotify').click(function(){
+
+		var record_track = $(this).parent().children().eq(1).text();
+		var record_artist = $(this).parent().children().eq(2).text();
+		var get_url = 'http://ws.spotify.com/search/1/track.json?q=' + record_track;
+		$.get(get_url, function( data ) {
+			target_artist = record_artist.toLowerCase().substring(0,8);
+			var match = false;
+			console.log(data['tracks'][0]['href']);
+			for (var i = 0; i < data['tracks'].length; i++){
+				if (!match) {
+					var artist = data['tracks'][i]['artists'][0]['name'].toLowerCase().substring(0,8);
+					if (artist == target_artist) {
+						redirect = data['tracks'][i]['href'];
+						redirect_data = redirect.split(':')
+						redirct_url = 'https://play.spotify.com/track/' + redirect_data[2];
+						window.location.href = redirct_url;
+						match = true;
+					}
+				}
+			}
+			if (!match)
+  				$('#error').html("Sorry! We looked high and low but we could not find the track on spotify");
+		});
+	});
+
   });
 
 </script>
@@ -107,11 +135,11 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			mainlist = postings.intersectlists(mainlist, postings.getlist(query[i]))
 		tracks = postings.tracknames(mainlist)
 		outstring = ""
-		self.wfile.write('<table class="table table-bordered"> <tr><th>Rank</th><th>Track Title</th><th>Artist</th><th>Score</th><th>TrackID</th></tr> ')
+		self.wfile.write('<table class="table table-bordered"> <tr><th>Rank</th><th>Track Title</th><th>Artist</th><th>Score</th><th>TrackID</th><th>Listen</th></tr> ')
 		
 		for i in xrange(0, len(tracks)):
 			split = tracks[i].split('|')
-			outstring = '<tr><td>'+str(i)+'</td><td>'+split[0]+'</td><td>'+split[1]+'</td><td>'+split[2]+'</td><td>'+split[3]+'</tr>'
+			outstring = '<tr><td>'+str(i)+'</td><td>'+split[0]+'</td><td>'+split[1]+'</td><td>'+split[2]+'</td><td>'+split[3]+'<td><button class="btn btn-primary spotify">Spotify</button></td>'+'</tr>'
 			self.wfile.write(outstring)
 	
 		self.wfile.write('</table></div></body>')
