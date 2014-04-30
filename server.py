@@ -40,10 +40,17 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 suggestions = eval('(' + result + ')');
                 selector = 0;
                 var sugstring = '';
-                for (var i = 0; i < suggestions.length; i++)
-                   sugstring += suggestions[i]+'<br>';
-                $("#suggestions").html(sugstring); 
+                var ensp = "&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;";
+                for (var i = 0; i < Math.floor(suggestions.length/2); i++){
+                   sugstring += '<tr><td>'+suggestions[i]+ensp+'</td><td>';
+                   var ind = Math.ceil(suggestions.length/2)+i;
+                   if (ind < suggestions.length)
+                     sugstring += suggestions[ind]+'</td>';
+                   sugstring+='</tr>'
+                }
+                $("#sugtable").html(sugstring); 
   }} ); }
+
   $(document).ready(function(){
      $("#query").keypress(function(e){ 
             query = $("#query").val()+String.fromCharCode(e.keyCode);
@@ -63,7 +70,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
            if (suggestions[selector] != '--'){
              query = $('#query').val().split(',');
              query[query.length-1] = suggestions[selector];
-             $("#query").val(query.join(', '));
+             $("#query").val(query.join(','));
            }
            selector++;
         }
@@ -111,8 +118,9 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 					<td>
 
 					<h1 id="asdf">Million Song Database - Search By Tags</h1>
-                                        <div id='suggestions'> suggestions go here!</div>
+                                        <div id='instructions'> <b>Input your search terms below. Search suggestions will pop up beneath this banner; press shift to iterate through the list.</b> <br><br> </div>
 
+                                        <table id = 'sugtable'> </table>
 
 					<input type="text" autocomplete="off" size="100" class="input input-lg" id="query" name="q"> <br><br>
 				
