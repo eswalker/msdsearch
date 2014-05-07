@@ -30,19 +30,25 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
   
 <script>
   var suggestions;
-  var selector = 0;
+  var displayNum = 14;
+  var querySelector = 0;
+  var displaySelector = 0;
   function getQueries(instring){
            var tagparts = instring.split(',');
            var tag = tagparts[tagparts.length-1];
-           tag = tag.replace(' ','');
+           //tag = tag.replace(' ','');
            $.ajax({type:'POST', url:'?p='+tag, success:function(result){
                 suggestions = eval('(' + result + ')');
-                selector = 0;
+        
+                if (displayNum > suggestions.length)
+                   displayNum = suggestions.length;
+        
+                displaySelector = 0;
                 var sugstring = '';
                 var ensp = "&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;";
-                for (var i = 0; i < Math.floor(suggestions.length/2); i++){
+                for (var i = 0; i < Math.floor(displayNum/2); i++){
                    sugstring += '<tr><td>'+suggestions[i]+ensp+'</td><td>';
-                   var ind = Math.ceil(suggestions.length/2)+i;
+                   var ind = Math.ceil(displayNum/2)+i;
                    if (ind < suggestions.length)
                      sugstring += suggestions[ind]+'</td>';
                    sugstring+='</tr>'
@@ -50,29 +56,52 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 $("#sugtable").html(sugstring); 
   }} ); }
 
+
+  function updateQueries(){
+                displaySelector+=displayNum;
+                if (displaySelector >= suggestions.length)
+                   displaySelector = 0;
+                var sugstring = '';
+                var ensp = "&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;";
+                for (var i = displaySelector; i < displaySelector+Math.floor(displayNum/2); i++){
+                   if (i >= suggestions.length) break;
+
+                   sugstring += '<tr><td>'+suggestions[i]+ensp+'</td><td>';
+                   var ind = Math.ceil(displayNum/2)+i;
+                   if (ind < suggestions.length)
+                     sugstring += suggestions[ind]+'</td>';
+                   sugstring+='</tr>'
+                }
+                $("#sugtable").html(sugstring);   
+  }       
+
+
   $(document).ready(function(){
      $("#query").keypress(function(e){ 
             query = $("#query").val()+String.fromCharCode(e.keyCode);
             getQueries(query); 
-     });
- 
+      });
+
      $("#query").keydown(function(e){
         if (e.keyCode==8){
            query = $("#query").val();
            query = query.substring(0, query.length-1);
            getQueries(query);
         }
-        else if (e.keyCode==16){
+        else if (e.keyCode==9){
+           e.preventDefault();
            end = suggestions.length-1
-           if (selector > end)
-             selector = 0;
-           if (suggestions[selector] != '--'){
+           if (querySelector > end)
+             querySelector = 0;
+           if (suggestions[querySelector] != '--'){
              query = $('#query').val().split(',');
-             query[query.length-1] = suggestions[selector];
+             query[query.length-1] = suggestions[querySelector];
              $("#query").val(query.join(','));
            }
-           selector++;
+           querySelector++;
         }
+       else if (e.keyCode==16)
+          updateQueries();
      });
 
 	$('.spotify').click(function(){

@@ -68,8 +68,8 @@ def get_suggestions(partial_query):
         if (len(tuples[i][0].split(' ')) >= len(tag_parts)):
             suggestions.append(tuples[i][0])
     numsugg = len(suggestions)
-    if numsugg > 15:
-        numsugg = 15
+    if numsugg > 100:
+        numsugg = 100
     return suggestions[0:numsugg]
 '''
 def makefile(name, contents):
