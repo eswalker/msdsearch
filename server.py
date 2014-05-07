@@ -13,8 +13,8 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		path = self.path.replace("%20", ' ').lower();
 		path = path.split('?p=')[1];
 		suggestions = query_suggest.get_suggestions(path)
-		print path;
-		print suggestions
+		#print path
+		#print suggestions
 		self.wfile.write(json.dumps(suggestions))
 
 	def do_GET(self):
@@ -163,9 +163,11 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 ''')
 		
 		path = self.path.encode('utf-8').replace("+", "%20").lower()
-		decoded_path = urllib.unquote(path.encode('utf-8'))	
-		query = decoded_path[decoded_path.index(query_split) + len(query_split):]		
-
+		decoded_path = urllib.unquote(path.encode('utf-8'))
+		try:
+			query = decoded_path[decoded_path.index(query_split) + len(query_split):]		
+		except:
+			return
 		query = query.split(',')
 
 		mainlist = postings.getlist(query[0].strip())

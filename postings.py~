@@ -96,9 +96,9 @@ def testing():
     intersection =  intersectlists(list1, list2)
     #print intersection
     intersection2 = intersectlists(list3, intersection)
-    #print intersection2
+    print intersection2
     
-    #print sortedtracks(intersection2)
+    print sortedtracks(intersection2)
 
 
 """mainlist = getlist(sys.argv[1])
