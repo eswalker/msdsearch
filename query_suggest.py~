@@ -40,14 +40,14 @@ def intersect_lists(list1, list2):
                 break
         if (list2[j][0] == list1[i][0]):
             tuples.append((list1[i][0], float(list1[i][1])+float(list2[j][1])))
-    #print tuples
+    print tuples
     return tuples
 
 
 # given a partial query string, returns all possible queries
 def get_suggestions(partial_query):
     tag_parts = partial_query.split(' ')
-    #print tag_parts
+    print tag_parts
     tuples = getlist(tag_parts[0])
 
     if (tag_parts[len(tag_parts)-1] == ''):
