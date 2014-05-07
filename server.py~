@@ -93,7 +93,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 						redirect = data['tracks'][i]['href'];
 						redirect_data = redirect.split(':')
 						redirct_url = 'https://play.spotify.com/track/' + redirect_data[2];
-						window.open(redirct_url);
+						window.location = redirct_url;
 						match = true;
 					}
 				}
