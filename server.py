@@ -179,7 +179,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		
 		for i in xrange(0, len(tracks)):
 			split = tracks[i].split('|')
-			outstring = '<tr><td>'+str(i)+'</td><td>'+split[0]+'</td><td>'+split[1]+'</td><td>'+split[2]+'</td><td>'+split[3]+'<td><button class="btn btn-success spotify">Spotify</button></td>'+'</tr>'
+			outstring = '<tr><td>'+str(i+1)+'</td><td>'+split[0]+'</td><td>'+split[1]+'</td><td>'+split[2]+'</td><td>'+split[3]+'<td><button class="btn btn-success spotify">Spotify</button></td>'+'</tr>'
 			self.wfile.write(outstring)
 	
 		self.wfile.write('</table></div></body>')
