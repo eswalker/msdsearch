@@ -36,16 +36,17 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
   function getQueries(instring){
            var tagparts = instring.split(',');
            var tag = tagparts[tagparts.length-1];
-           //tag = tag.replace(' ','');
+           if (tag[0] == ' ') tag = tag.substring(1,tag.length);
            $.ajax({type:'POST', url:'?p='+tag, success:function(result){
                 suggestions = eval('(' + result + ')');
-        
+                displayNum = 14;
                 if (displayNum > suggestions.length)
                    displayNum = suggestions.length;
         
                 displaySelector = 0;
                 var sugstring = '';
                 var ensp = "&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;";
+
                 for (var i = 0; i < Math.floor(displayNum/2); i++){
                    sugstring += '<tr><td>'+suggestions[i]+ensp+'</td><td>';
                    var ind = Math.ceil(displayNum/2)+i;
@@ -71,6 +72,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
                    if (ind < suggestions.length)
                      sugstring += suggestions[ind]+'</td>';
                    sugstring+='</tr>'
+                  
                 }
                 $("#sugtable").html(sugstring);   
   }       
@@ -78,8 +80,11 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
   $(document).ready(function(){
      $("#query").keypress(function(e){ 
-            query = $("#query").val()+String.fromCharCode(e.keyCode);
-            getQueries(query); 
+            if (e.keyCode !=9 && e.keyCode != 8)
+            { 
+              query = $("#query").val()+String.fromCharCode(e.keyCode);
+              getQueries(query); 
+            }
       });
 
      $("#query").keydown(function(e){
@@ -88,20 +93,26 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
            query = query.substring(0, query.length-1);
            getQueries(query);
         }
+
         else if (e.keyCode==9){
            e.preventDefault();
            end = suggestions.length-1
            if (querySelector > end)
              querySelector = 0;
            if (suggestions[querySelector] != '--'){
-             query = $('#query').val().split(',');
+             query = $('#query').val()
+             if (query[query.length-1]==',')
+               query = query.substring(0,query.length-1);
+
+             query = query.split(',');
              query[query.length-1] = suggestions[querySelector];
-             $("#query").val(query.join(','));
+             $("#query").val(query.join(',')+',');
            }
            querySelector++;
         }
-       else if (e.keyCode==16)
-          updateQueries();
+       else if (e.keyCode==16){
+           updateQueries();
+        }
      });
 
 	$('.spotify').click(function(){
