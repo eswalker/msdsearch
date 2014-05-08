@@ -54,6 +54,10 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
                      sugstring += suggestions[ind]+'</td>';
                    sugstring+='</tr>'
                 }
+                if (displayNum % 2 != 0 && suggestions[0] != '--'){
+                   sugstring += '<tr><td>'+suggestions[suggestions.length-1]+ensp+'</td><td>';
+                   sugstring += '<td>'+ensp+'</td><\tr>';
+                } 
                 $("#sugtable").html(sugstring); 
   }} ); }
 
@@ -62,6 +66,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 displaySelector+=displayNum;
                 if (displaySelector >= suggestions.length)
                    displaySelector = 0;
+                querySelector  = displaySelector;
                 var sugstring = '';
                 var ensp = "&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;";
                 for (var i = displaySelector; i < displaySelector+Math.floor(displayNum/2); i++){
@@ -82,6 +87,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
      $("#query").keypress(function(e){ 
             if (e.keyCode !=9 && e.keyCode != 8)
             { 
+              displaySelector = 0; querySelector = 0;
               query = $("#query").val()+String.fromCharCode(e.keyCode);
               getQueries(query); 
             }
@@ -97,8 +103,15 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
         else if (e.keyCode==9){
            e.preventDefault();
            end = suggestions.length-1
-           if (querySelector > end)
+           if (querySelector > end) {
              querySelector = 0;
+             displaySelector = 0;
+             updateQueries;
+           }
+
+           if (querySelector >= displaySelector+displayNum)
+             updateQueries();
+   
            if (suggestions[querySelector] != '--'){
              query = $('#query').val()
              if (query[query.length-1]==',')
@@ -159,7 +172,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 					<td>
                                         <p id="error" class="bg-danger" hidden></p>
 					<h1 id="asdf">Million Song Database - Search By Tags</h1>
-                                        <div id='instructions'> <b>Input your search terms below. Search suggestions will pop up beneath this banner; press shift to iterate through the list.</b> <br><br> </div>
+                                        <div id='instructions'> <b>Input your search terms below. Search suggestions will pop up beneath this banner; press tab to iterate through the list and press shift to suggest more tags.</b> <br><br> </div>
 
                                         <table id = 'sugtable'> </table>
 
