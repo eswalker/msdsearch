@@ -37,6 +37,7 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
            var tagparts = instring.split(',');
            var tag = tagparts[tagparts.length-1];
            if (tag[0] == ' ') tag = tag.substring(1,tag.length);
+           if (tag[0] == '' && tagparts.length > 1) tag = tagparts[tagparts.length-2]; 
            $.ajax({type:'POST', url:'?p='+tag, success:function(result){
                 suggestions = eval('(' + result + ')');
                 displayNum = 14;
