@@ -197,6 +197,8 @@ class Reply(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 		mainlist = postings.getlist(query[0].strip())
 		for i in xrange(1, len(query)):
+                        if (query[i] == ''):
+				continue;
 			mainlist = postings.intersectlists(mainlist, postings.getlist(query[i].strip()))
 		tracks = postings.tracknames(mainlist)
 		outstring = ""
